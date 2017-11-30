@@ -7,6 +7,7 @@
 #include <utility>      // std::pair, std::make_pair
 #include <string>       // std::string
 #include <iostream>     // std::cout
+#define MAX 1000000 // distância exacerbada 
 
 using namespace std;
 
@@ -36,6 +37,55 @@ void Grafo::adicionarAresta(int v1, int v2, int distance) {
 	adj[v1].push_back(std::make_pair(v2, distance));
 }
 
+
+int dijkstra(int v1, v2){
+	int vetor_distancia[V];
+	int nos_visitados[V];
+
+	priority_queue <pair<int, int>,
+vector<pair<int, int> >, greater<pair<int, int>>> dist_vertice;
+
+	memset(vetor_distancia, MAX, V);
+	memset(nos_visitados, false, V);
+
+	vetor_distancia[v1] = 0; // a distancia da origem igual a 0
+
+	dist_vertice.push(make_pair(vetor_distancia[v1], v1));
+	
+	while(!dist_vertice.empty()) {
+		pair<int, int> par_aux = dist_vertice.top();
+
+		int vertice = par_aux.second;
+		dist_vertice.pop();
+
+		if(nos_visitados[vertice] == false){
+			
+			nos_visitados[vertice] = true;
+			list<pair<int, int>>::iterator j;
+
+			for(j = adj[vertice].begin(); j != adj[vertice].end(); j++) {
+
+				int vertice_adj = j->first;
+				int valor_aresta = j->second;
+
+				if(vetor_distancia[vertice_adj] > (vetor_distancia[vertice] + 
+					valor_aresta)) {
+
+					vetor_distancia[vertice_adj] = vetor_distancia[vertice] + 
+						valor_aresta;
+
+					dist_vertice.push(make_pair(vetor_distancia[vertice_adj], 
+						vertice_adjr))
+				}	
+			}
+
+		}
+
+	}	
+
+	return vetor_distancia[v2];
+}
+ 
 void Grafo::imprimirGrafo() {
 	for (int i = 0; i < V; i++) {
 		for(pair<int,int> item : adj[i]) {
