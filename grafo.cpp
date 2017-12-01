@@ -3,6 +3,9 @@
 #include <iostream>
 #include <list>
 #include <algorithm> // função find
+#include <list>
+#include <queue>
+#include <cstring>
 
 #include <utility>      // std::pair, std::make_pair
 #include <string>       // std::string
@@ -25,6 +28,7 @@ public:
 
 	bool existeVizinho(int v1, int v2); // verifica se v2 é vizinho de v1
 	void imprimirGrafo();
+	int dijkstra(int v1, int v2); // calcula o menor caminho entre dois nós
 };
 
 Grafo::Grafo(int V) {
@@ -34,19 +38,24 @@ Grafo::Grafo(int V) {
 
 void Grafo::adicionarAresta(int v1, int v2, int distance) {
 	// adiciona vértice v2 à lista de vértices adjacentes de v1
-	adj[v1].push_back(std::make_pair(v2, distance));
+	adj[v1].push_back(make_pair(v2, distance));
+	// como o grafo é unidirecional, deve-se adicionar v1 na lista de v2
+	adj[v2].push_back(make_pair(v1, custo));
 }
 
 
-int dijkstra(int v1, v2){
-	int vetor_distancia[V];
-	int nos_visitados[V];
+int Grafo::dijkstra(int v1, int v2) {
 
-	priority_queue <pair<int, int>,
-vector<pair<int, int> >, greater<pair<int, int>>> dist_vertice;
+	int vetor_distancia[V];/* vetor de distância */
+	bool nos_visitados[V];/* vetor de nós visitados */
 
-	memset(vetor_distancia, MAX, V);
-	memset(nos_visitados, false, V);
+	priority_queue < pair<int, int>,
+		vector<pair<int, int> >, greater<pair<int, int> > > dist_vertice;
+
+	for(int i = 0; i < V; i++) {
+			vetor_distancia[i] = MAX;
+			nos_visitados[i] = false;
+	}
 
 	vetor_distancia[v1] = 0; // a distancia da origem igual a 0
 
@@ -75,7 +84,7 @@ vector<pair<int, int> >, greater<pair<int, int>>> dist_vertice;
 						valor_aresta;
 
 					dist_vertice.push(make_pair(vetor_distancia[vertice_adj], 
-						vertice_adjr))
+						vertice_adj));
 				}	
 			}
 
@@ -110,18 +119,20 @@ void Grafo::imprimirGrafo() {
 //
 
 int main(){
+
 	// criando um grafo de 4 vértices
 	Grafo grafo(4);
 
-	// adicionando as arestas
-	// parametros: nó inicial, nó final e distancia entre eles.
+	//adicionando as arestas
+	//parametros: nó inicial, nó final e distancia entre eles.
 	grafo.adicionarAresta(0, 1, 100);
 	grafo.adicionarAresta(0, 3, 500);
 	grafo.adicionarAresta(1, 2, 350);
 	grafo.adicionarAresta(3, 1, 50);
 	grafo.adicionarAresta(3, 2, 800);
 
-	grafo.imprimirGrafo();
+	//grafo.imprimirGrafo();
+	cout << grafo.dijkstra(1,0) << endl;
 
 	// mostrando os graus de saída
 	//cout << "Grau de saida do vertice 1: " << grafo.obterGrauDeSaida(1);
