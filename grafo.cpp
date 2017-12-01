@@ -21,15 +21,12 @@ class Grafo {
 public:
 	Grafo(int V); // construtor
 	void adicionarAresta(int v1, int v2, int distancia); // adiciona uma aresta no grafo
-
-	// obtém o grau de saída de um dado vértice
-	// grau de saída é o número de arcos que saem de "v"
-	int obterGrauDeSaida(int v);
-
-	bool existeVizinho(int v1, int v2); // verifica se v2 é vizinho de v1
-	void imprimirGrafo();
+	void imprimirGrafo(std::string *nomes);
 	int dijkstra(int v1, int v2); // calcula o menor caminho entre dois nós
+	void print_nomes(std::string *nomes);
 };
+
+/* Algoritmos do Grafo */
 
 Grafo::Grafo(int V) {
 	this->V = V; // atribui o número de vértices
@@ -40,7 +37,7 @@ void Grafo::adicionarAresta(int v1, int v2, int distance) {
 	// adiciona vértice v2 à lista de vértices adjacentes de v1
 	adj[v1].push_back(make_pair(v2, distance));
 	// como o grafo é unidirecional, deve-se adicionar v1 na lista de v2
-	adj[v2].push_back(make_pair(v1, custo));
+	adj[v2].push_back(make_pair(v1, distance));
 }
 
 
@@ -94,29 +91,59 @@ int Grafo::dijkstra(int v1, int v2) {
 
 	return vetor_distancia[v2];
 }
- 
-void Grafo::imprimirGrafo() {
+
+/* Para melhor apresentação do algoritmo */
+
+void Grafo::imprimirGrafo(std::string *nomes) {
 	for (int i = 0; i < V; i++) {
 		for(pair<int,int> item : adj[i]) {
-			cout << i << " - ";
-			cout << item.first;
-			cout << " distancia: " << item.second << endl;
+			cout << nomes[i] << " - ";
+			cout << nomes[item.first];
+			cout << ": " << item.second << endl;
 		}
 
 	}
 }
 
-// bool Grafo::existeVizinho(int v1, int v2) {
-// 	if(find(adj[v1].begin(), adj[v1].end(), v2) != adj[v1].end())
-// 		return true;
-// 	return false;
-// }
+void Grafo::print_nomes(std::string *nomes) {
 
-// int Grafo::obterGrauDeSaida(int v) {
-// 	// basta retornar o tamanho da lista que é a quantidade de vizinhos
-// 	return adj[v].size();
-// }
-//
+	for(int index = 0; index < V; index++) {
+		cout << index << ". "<< nomes[index] << endl;
+	}
+}
+
+void menu(Grafo grafo, std::string *nomes) {
+
+	cout << "**********************************************************************" << endl;
+	cout << "			LATAM Airlines Brasil					 " << endl;
+
+	cout << "	Bem vindo a LATAM Airlines Brasil!						 " << endl;
+	cout << "	Aqui estao listados os aeroportos do Brasil e as distancia\n        entre eles." << endl;
+	cout << "	Lembre-se: Nem todos os aeroportos possuem voos diretos.\n"<< endl;
+	cout << "		Por isso decidiremos a melhor rota para voce!!		 " << endl;
+
+	cout << "**********************************************************************" << endl;
+
+
+	cout << "		Aeroportos e seus voos diretos				 \n" << endl;
+	grafo.imprimirGrafo(nomes);
+
+	cout << "		\nIndice dos aeroportos  				 " << endl;
+	grafo.print_nomes(nomes);
+
+	cout << "		Escolha seu origem e destino  				 " << endl;
+
+	int orig = 0, dest = 0;
+	cout << " Origem: ";
+	cin >> orig;
+	cout << " Destino: ";
+	cin >> dest;
+
+	cout << "	\nMenor distancia entre " << nomes[orig] << " - " << nomes[dest] << endl;
+	cout << "	" << grafo.dijkstra(orig, dest) << endl;
+
+	exit(0);
+}
 
 int main(){
 
@@ -131,23 +158,9 @@ int main(){
 	grafo.adicionarAresta(3, 1, 50);
 	grafo.adicionarAresta(3, 2, 800);
 
-	//grafo.imprimirGrafo();
-	cout << grafo.dijkstra(1,0) << endl;
+	string nomes[4] = {"Brasilia", "Sao Paulo", "Florianopolis", "Bahia"};
 
-	// mostrando os graus de saída
-	//cout << "Grau de saida do vertice 1: " << grafo.obterGrauDeSaida(1);
-	//cout << "\nGrau de saida do vertice 3: " << grafo.obterGrauDeSaida(3);
-
-	// verifica se existe vizinhos
-	// if(grafo.existeVizinho(0, 1))
-	// 	cout << "\n\n1 eh vizinho de 0\n";
-	// else
-	// 	cout << "\n\n1 NAO eh vizinho de 0\n";
-	//
-	// if(grafo.existeVizinho(0, 2))
-	// 	cout << "2 eh vizinho de 0\n";
-	// else
-	// 	cout << "2 NAO eh vizinho de 0\n";
+	menu(grafo, nomes);
 
 	return 0;
 }
